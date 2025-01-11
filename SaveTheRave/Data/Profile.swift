@@ -73,7 +73,7 @@ extension Profile {
 	}
 	
 	static var philipp: Profile {
-		Profile(id: "123", userName: "qhilipp", firstName: "Philipp", lastName: "Kathöfer", phoneNumber: "‭(805) 896-7985‬", instagram: "qhilipp.k", birthday: Date(timeIntervalSince1970: 1090692414), gender: .male, pictureData: nil, friends: [sven, tyler, tom])
+		Profile(id: "123", userName: "qhilipp", firstName: "Philipp", lastName: "Kathöfer", phoneNumber: "‭(805) 896-7985‬", instagram: "qhilipp.k", birthday: Date(timeIntervalSince1970: 1090692414), gender: .male, pictureData: UIImage(named: "philippParty")?.pngData(), friends: [sven, tyler, tom])
 	}
 	
 	static var sven: Profile {

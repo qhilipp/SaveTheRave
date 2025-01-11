@@ -8,11 +8,19 @@
 import SwiftUI
 
 struct PartyListEntryView: View {
+	
+	@State var party: Party
+	
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+		LabeledImage(party.picture) {
+			Text(party.name)
+				.font(.system(.title, design: .rounded, weight: .bold))
+			Text(party.description)
+				.foregroundStyle(.secondary)
+		}
     }
 }
 
 #Preview {
-    PartyListEntryView()
+	PartyListEntryView(party: .dummy)
 }
