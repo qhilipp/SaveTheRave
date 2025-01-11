@@ -8,17 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+	
+	@State var profile: Profile
+	@State var showProfileEditor = false
+	
+	var body: some View {
+		TabView {
+			Tab("Explore", systemImage: "party.popper.fill") {
+				Text("Coming soon ⏰")
+			}
+			Tab("Connections", systemImage: "person.3.fill") {
+				ConnectionsView(profile: profile)
+			}
+		}
+		.sheet(isPresented: .constant(true)) {
+			WelcomePipelineView()
+		}
+	}
 }
 
 #Preview {
-    ContentView()
+	ContentView(profile: .dummy)
 }
