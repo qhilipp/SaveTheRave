@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @Observable
-class Profile: Identifiable {
+class Profile: Identifiable, Codable {
 	var id: String
 	var userName: String
 	var firstName: String
@@ -20,6 +20,7 @@ class Profile: Identifiable {
 	var gender: Gender
 	var pictureData: Data?
 	var friends: [Profile]
+	var token: String
 	
 	var fullName: String {
 		firstName + " " + (lastName ?? "")
@@ -41,7 +42,7 @@ class Profile: Identifiable {
 		}
 	}
 	
-	init(id: String, userName: String, firstName: String, lastName: String? = nil, phoneNumber: String? = nil, instagram: String? = nil, birthday: Date? = nil, gender: Gender, pictureData: Data? = nil, friends: [Profile] = []) {
+	init(id: String, userName: String, firstName: String, lastName: String? = nil, phoneNumber: String? = nil, instagram: String? = nil, birthday: Date? = nil, gender: Gender, pictureData: Data? = nil, friends: [Profile] = [], token: String = "") {
 		self.id = id
 		self.userName = userName
 		self.firstName = firstName
@@ -52,6 +53,7 @@ class Profile: Identifiable {
 		self.gender = gender
 		self.pictureData = pictureData
 		self.friends = friends
+		self.token = token
 	}
 }
 

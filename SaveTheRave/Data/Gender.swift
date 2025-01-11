@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum Gender: CustomStringConvertible, Hashable {
+enum Gender: CustomStringConvertible, Hashable, Codable {
 	case male
 	case female
 	case custom(name: String)

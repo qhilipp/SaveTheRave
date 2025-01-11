@@ -29,7 +29,7 @@ struct WelcomeView: View {
 				Spacer()
 				
 				ConfirmationButton("Continue", action: action)
-				.padding(.bottom)
+					.padding(.bottom)
 			}
 			.padding(.horizontal)
 		}

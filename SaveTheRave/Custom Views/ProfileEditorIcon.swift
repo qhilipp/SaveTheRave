@@ -22,7 +22,7 @@ struct ProfileEditorIcon: View {
 				showProfileEditor.toggle()
 			}
 			.sheet(isPresented: $showProfileEditor) {
-				ProfileEditorView(profile: profile) {
+				ProfileEditorView(profile: $profile) {
 					
 				}
 			}

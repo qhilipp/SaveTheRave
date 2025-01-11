@@ -10,6 +10,8 @@ import SwiftUI
 struct WelcomePipelineView: View {
 	
 	@State var path = NavigationPath()
+	@State var profile: Profile = .philipp
+	@State var password: String = ""
 	@Environment(\.dismiss) var dismiss
 	
 	var body: some View {
@@ -31,8 +33,21 @@ struct WelcomePipelineView: View {
 	}
 		
 	var registerView: some View {
-		ProfileEditorView(profile: .empty, confirmationText: "Register") {
+		ProfileEditorView(profile: $profile, confirmationText: "Register") {
+			CreateUserEndpoint(profile: profile, password: password)
+				.sendRequest { result in
+//				switch result {
+//					case .success(let data):
+//						print(data)
+//					case .failure(let error):
+//						print(error)
+//				}
+			}
 			dismiss()
+		} extraInput: {
+			Section("Security") {
+				SecureField("Password", text: $password)
+			}
 		}
 		.navigationTitle("Register")
 	}

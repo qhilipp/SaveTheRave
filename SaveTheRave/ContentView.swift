@@ -11,6 +11,7 @@ struct ContentView: View {
 	
 	@State var profile: Profile
 	@State var showProfileEditor = false
+	@State var showWelcomePipeline = true
 	
 	var body: some View {
 		TabView {
@@ -21,8 +22,9 @@ struct ContentView: View {
 				ConnectionsView(profile: profile)
 			}
 		}
-		.sheet(isPresented: .constant(true)) {
+		.sheet(isPresented: $showWelcomePipeline) {
 			WelcomePipelineView()
+				.interactiveDismissDisabled(true)
 		}
 	}
 }

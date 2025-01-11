@@ -7,12 +7,20 @@
 
 import SwiftUI
 
-struct ProfileEditorView: View {
+struct ProfileEditorView<Content: View>: View {
 	
-	@State var profile: Profile
+	@Binding var profile: Profile
 	@State var customGender = ""
 	var confirmationText = "Done"
 	var action: () -> Void
+	var extraInput: () -> Content
+	
+	init(profile: Binding<Profile>, confirmationText: String = "Done", action: @escaping () -> Void, extraInput: (@escaping () -> Content) = { EmptyView() }) {
+		self._profile = profile
+		self.confirmationText = confirmationText
+		self.action = action
+		self.extraInput = extraInput
+	}
 	
 	var body: some View {
 		Form {
@@ -99,6 +107,8 @@ struct ProfileEditorView: View {
 				}
 			}
 			
+			extraInput()
+			
 			ConfirmationButton(confirmationText) {
 				if case .custom = profile.gender {
 					profile.gender = .custom(name: customGender)
@@ -111,5 +121,5 @@ struct ProfileEditorView: View {
 }
 
 #Preview {
-	ProfileEditorView(profile: .dummy) {}
+	ProfileEditorView(profile: .constant(.dummy)) {}
 }

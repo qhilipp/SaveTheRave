@@ -13,7 +13,7 @@ struct PartyListEntryView: View {
 	
     var body: some View {
 		LabeledImage(party.picture) {
-			Text(party.name)
+			Text(party.title)
 				.font(.system(.title, design: .rounded, weight: .bold))
 			Text(party.description)
 				.foregroundStyle(.secondary)
