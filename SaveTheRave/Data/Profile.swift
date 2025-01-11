@@ -104,5 +104,4 @@ extension Profile {
 	func fits(searchTerm: String) -> Bool {
 		firstName.contains(searchTerm) || (lastName?.contains(searchTerm) ?? false) || (phoneNumber?.contains(searchTerm) ?? false)
 	}
-	
 }
