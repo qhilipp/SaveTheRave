@@ -12,9 +12,11 @@ class ProfileListEntryViewModel {
 	var profile: Profile?
 	var friendStatus = FriendStatus.unknown
 	var actionType: ActionType
+	var action: () -> Void
 	
-	init(profileId: Int, actionType: ActionType) {
+	init(profileId: Int, actionType: ActionType, action: @escaping () -> Void) {
 		self.actionType = actionType
+		self.action = action
 		GetUserByIdEndpoint(id: profileId)
 			.sendRequest { result in
 				if case .success(let data) = result {
@@ -30,8 +32,8 @@ struct ProfileListEntryView: View {
 	
 	@State var vm: ProfileListEntryViewModel
 	
-	init(profileId: Int, with actionType: ActionType = .request) {
-		vm = ProfileListEntryViewModel(profileId: profileId, actionType: actionType)
+	init(profileId: Int, with actionType: ActionType = .request, action: @escaping () -> Void = {}) {
+		vm = ProfileListEntryViewModel(profileId: profileId, actionType: actionType, action: action)
 	}
 	
 	var body: some View {
@@ -46,6 +48,7 @@ struct ProfileListEntryView: View {
 					Text(vm.profile?.fullName ?? "Loading")
 					if [.unknown, .noFriend].contains(vm.friendStatus) && vm.actionType != .none {
 						Button(vm.actionType.rawValue) {
+							vm.action()
 							switch vm.actionType {
 								case .request:
 									requestFriend()

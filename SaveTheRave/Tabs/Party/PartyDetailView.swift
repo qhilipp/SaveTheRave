@@ -11,6 +11,7 @@ struct PartyDetailView: View {
 	
 	@State var party: Party
 	@State var profile: Profile
+	@State var showBuddy = false
 	
 	var confirmationPayload: (String, Endpoint) {
 		party.attendees.contains(profile) ? ("Leave", LeavePartyEndpoint(partyId: party.id)) : ("Join", JoinPartyEndpoint(partyId: party.id))
@@ -61,6 +62,19 @@ struct PartyDetailView: View {
 			}
 		}
 		.padding()
+		.toolbar {
+			ToolbarItem(placement: .topBarTrailing) {
+				Button {
+					showBuddy = true
+				} label: {
+					Image(systemName: "person.2")
+				}
+			}
+		}
+		.sheet(isPresented: $showBuddy) {
+			WebView(urlString: "http://169.231.139.207:8080/")
+				.edgesIgnoringSafeArea(.all)
+		}
     }
 }
 

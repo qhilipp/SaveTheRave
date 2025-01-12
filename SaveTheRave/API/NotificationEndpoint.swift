@@ -11,6 +11,7 @@ struct NotificationEndpoint: Endpoint {
 	let path = "app/user/notifications"
 	let method = "GET"
 	var headers: [String: String]
+	var debug: Bool { false }
 	
 	init() {
 		self.headers = [

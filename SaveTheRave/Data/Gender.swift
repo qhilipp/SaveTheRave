@@ -33,7 +33,7 @@ enum Gender: CustomStringConvertible, Hashable, Codable {
 	}
 	
 	init(from string: String?) {
-		switch string {
+		switch string?.lowercased() {
 		case nil:
 			self = .unknown
 		case "male":

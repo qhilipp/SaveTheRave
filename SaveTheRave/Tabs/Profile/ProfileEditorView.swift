@@ -114,6 +114,8 @@ struct ProfileEditorView<Content: View>: View {
 				Button("Log out", role: .destructive) {
 					dismiss()
 				}
+				.padding(.bottom)
+				.padding(.bottom)
 			}
 			
 			ConfirmationButton(confirmationText) {
