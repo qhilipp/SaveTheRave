@@ -174,33 +174,27 @@ struct QRGeneratorView: View {
                                     .sendRequest { result in
                                         if case .success(let data) = result {
                                             if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                                                if let message = jsonObject["message"] as? String {
-                                                    isSuccess = false
-                                                    messageText = message
-                                                    isShowingMessage = true
-                                                } else if let error = jsonObject["error"] as? String {
+                                                if let error = jsonObject["error"] as? String {
                                                     isSuccess = false
                                                     messageText = error
                                                     isShowingMessage = true
                                                 } else {
-                                                    isSuccess = true
-                                                    messageText = "Successfully checked in"
-                                                    isShowingMessage = true
+                                                    // show user information by first getting user infos by GetUserByIdEndpoint(userId).sendRequest { result in {...} }
+                                                    GetUserByIdEndpoint(id: Int(userId)!)
+                                                                    .sendRequest { result in
+                                                                        if case .success(let data) = result {
+                                                                            if let user = Profile.load(from: data) {
+                                                                                currentUser = user
+                                                                                isShowingUserInfo = true
+                                                                            }
+                                                                        }
+                                                                    }
                                                 }
                                             }
                                         }
                                     }
                             }
-                            // show user information by first getting user infos by GetUserByIdEndpoint(userId).sendRequest { result in {...} }
-                            GetUserByIdEndpoint(id: Int(userId)!)
-                                            .sendRequest { result in
-                                                if case .success(let data) = result {
-                                                    if let user = try? Profile.load(from: data) {
-                                                        currentUser = user
-                                                        isShowingUserInfo = true
-                                                    }
-                                                }
-                                            }
+                            
                         } else {
                             isSuccess = false
                             messageText = "You are not in a party"

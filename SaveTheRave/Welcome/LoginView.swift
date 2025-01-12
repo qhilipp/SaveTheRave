@@ -21,7 +21,7 @@ struct LoginView: View {
         ZStack {
             // Background gradient
             LinearGradient(
-                colors: [.blue.opacity(0.6), .purple.opacity(0.6)],
+                colors: [.blue.opacity(0.6), .white.opacity(0.6)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -33,7 +33,7 @@ struct LoginView: View {
                 // Title
                 Text("Welcome Back")
                     .font(.system(size: 40, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                 
                 // Login form
                 VStack(spacing: 15) {
@@ -54,7 +54,7 @@ struct LoginView: View {
                             showPassword.toggle()
                         }) {
                             Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
-                                .foregroundColor(.gray)
+                                .foregroundColor(.black)
                         }
                     }
                     .textFieldStyle(CustomTextFieldStyle())
@@ -107,7 +107,8 @@ struct CustomTextFieldStyle: TextFieldStyle {
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
             .padding()
-            .background(Color.white)
+            .background(.white)
+            .foregroundStyle(.black)
             .cornerRadius(12)
             .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
     }
