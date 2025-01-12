@@ -85,7 +85,7 @@ struct PartiesView: View {
 	}
 	
 	func fetchJoinableParties() {
-		GetJoinablePartiesEndpoint(token: UserDefaults.standard.string(forKey: "token")!)
+		GetRelevantPartiesEndpoint()
 			.sendRequest { result in
 				switch result {
 					case .success(let data):

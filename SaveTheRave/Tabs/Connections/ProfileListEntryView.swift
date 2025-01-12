@@ -11,6 +11,7 @@ struct ProfileListEntryView: View {
 	
 	@State var profile: Profile
 	
+	
 	var body: some View {
 		HStack(alignment: .top) {
 			profile.picture

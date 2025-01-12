@@ -10,7 +10,7 @@ import Foundation
 struct CreatePartyEndpoint: Endpoint {
 	let path = "app/party/create"
 	let method = "POST"
-	let body: Data?
+	let parameters: [String: Any]?
 	var headers: [String: String] = ["Content-Type": "application/json"]
 	
 	init(profile: Profile, party: Party) {
@@ -19,18 +19,17 @@ struct CreatePartyEndpoint: Endpoint {
 			items[item] = Optional(Optional(nil))
 		}
 
-		let parameters: [String: Any] = [
+		self.parameters = [
 			"name": party.title,
 			"invitation_level": party.friendDepth,
 			"time": party.date.formattedWithTime,
 			"location": party.location,
 			"white_list": [],
 			"items": items,
-			"spotify_link": party.spotify,
+			"spotify_link": party.spotify ?? NSNull(),
 			"description": party.description
 		]
 		
 		self.headers["Authorization"] = UserDefaults.standard.string(forKey: "token")
-		self.body = try? JSONSerialization.data(withJSONObject: parameters, options: [])
 	}
 }

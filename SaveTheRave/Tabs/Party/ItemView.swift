@@ -1,5 +1,5 @@
 //
-//  ItemObtainmentView.swift
+//  ItemView.swift
 //  SaveTheRave
 //
 //  Created by Philipp Kathöfer on 11.01.2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ItemObtainmentView: View {
+struct ItemView: View {
 	
 	@State var profile: Profile
 	@State var item: String
@@ -53,5 +53,5 @@ struct ItemObtainmentView: View {
 }
 
 #Preview {
-	ItemObtainmentView(profile: .dummy, item: "Bacardí Razz", obtainer: nil)
+	ItemView(profile: .dummy, item: "Bacardí Razz", obtainer: nil)
 }

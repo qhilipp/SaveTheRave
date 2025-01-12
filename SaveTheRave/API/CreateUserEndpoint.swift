@@ -10,14 +10,14 @@ import Foundation
 struct CreateUserEndpoint: Endpoint {
 	let path = "app/user/create"
 	let method = "POST"
-	let body: Data?
+	let parameters: [String: Any]?
 	var headers: [String: String] = ["Content-Type": "application/json"]
 	
 	init(profile: Profile, password: String) {
-		let parameters: [String: Any] = [
+		self.parameters = [
 			"username": profile.userName,
 			"first_name": profile.firstName,
-			"last_name": profile.lastName,
+			"last_name": profile.lastName ?? NSNull(),
 			"password": password,
 			"birthday": profile.birthday.formatted,
 			"gender": profile.gender.description,
@@ -25,7 +25,5 @@ struct CreateUserEndpoint: Endpoint {
 			"friends": [],
 			"instagram": profile.instagram ?? NSNull()
 		]
-		
-		self.body = try? JSONSerialization.data(withJSONObject: parameters, options: [])
 	}
 }

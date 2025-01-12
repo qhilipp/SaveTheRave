@@ -12,15 +12,15 @@ class ViewModel {
 	
 	var profile: Profile?
 	var showProfileEditor = false
-	var showWelcomePipeline = true
+	var showWelcomePipeline = false
 	
 	func fetchProfile() {
-		guard let token = UserDefaults.standard.string(forKey: "token") else {
-			showWelcomePipeline = false
+		guard let _ = UserDefaults.standard.string(forKey: "token") else {
+			showWelcomePipeline = true
 			return
 		}
 		
-		GetUserEndpoint(token: token)
+		GetUserEndpoint()
 			.sendRequest { result in
 				switch result {
 					case .success(let data):
@@ -48,7 +48,7 @@ struct ContentView: View {
 					PartiesView()
 				}
 				Tab("Connections", systemImage: "person.3.fill") {
-					ConnectionsView(profile: profile)
+					ConnectionsView()
 				}
 				Tab("QR-Code", systemImage: "qrcode.viewfinder") {
 					QRGeneratorView()

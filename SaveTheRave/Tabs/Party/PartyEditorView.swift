@@ -40,14 +40,17 @@ struct PartyEditorView: View {
 			Section("Items") {
 				TextField("Item that someone should bring", text: $newItem)
 					.onSubmit {
-						party.items[newItem] = Optional(Optional(nil))
-						newItem = ""
+						withAnimation {
+							party.items[newItem] = Optional(Optional(nil))
+							newItem = ""
+						}
 					}
 				
 				List {
 					ForEach(Array(party.items.keys).sorted(), id: \.self) { item in
 						Text(item)
 							.padding()
+							.transition(AnyTransition.scale)
 					}
 					.onDelete(perform: deleteItems(at:))
 				}
@@ -67,13 +70,8 @@ struct PartyEditorView: View {
 			
 			ConfirmationButton("Create") {
 				CreatePartyEndpoint(profile: profile, party: party)
-					.sendRequest { result in
-						switch result {
-							case .success(let data):
-								dismiss()
-							case .failure(let error):
-								print(error)
-						}
+					.sendRequest { _ in
+						dismiss()
 					}
 			}
 			.listRowInsets(EdgeInsets())
@@ -81,11 +79,13 @@ struct PartyEditorView: View {
     }
 	
 	func deleteItems(at indexSet: IndexSet) {
-		let items = Array(party.items.keys).sorted()
-		let itemsToRemove = indexSet.map { items[$0] }
-		
-		for item in itemsToRemove {
-			party.items.removeValue(forKey: item)
+		withAnimation {
+			let items = Array(party.items.keys).sorted()
+			let itemsToRemove = indexSet.map { items[$0] }
+			
+			for item in itemsToRemove {
+				party.items.removeValue(forKey: item)
+			}
 		}
 	}
 	

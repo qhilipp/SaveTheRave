@@ -57,24 +57,26 @@ class Profile: Identifiable, Codable {
 
 extension Profile {
 	static func load(from data: Data) -> Profile? {
-
 		if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-			let profile = Profile(
-				id: jsonObject["id"] as! Int,
-				userName: jsonObject["username"].safeString!,
-				firstName: jsonObject["first_name"].safeString!,
-				lastName: jsonObject["last_name"].safeString,
-				phoneNumber: jsonObject["phone_number"].safeString,
-				instagram: jsonObject["instagram"].safeString,
-				birthday: jsonObject["birthday"].safeString.date,
-				gender: .init(from: jsonObject["gender"].safeString),
-				pictureData: nil,
-				friends: []
-			)
-			return profile
+			return load(from: jsonObject)
 		}
 
 		return nil
+	}
+	
+	static func load(from jsonObject: [String: Any]) -> Profile {
+		Profile(
+			id: jsonObject["id"] as! Int,
+			userName: jsonObject["username"].safeString!,
+			firstName: jsonObject["first_name"].safeString!,
+			lastName: jsonObject["last_name"].safeString,
+			phoneNumber: jsonObject["phone_number"].safeString,
+			instagram: jsonObject["instagram"].safeString,
+			birthday: jsonObject["birthday"].safeString.date,
+			gender: .init(from: jsonObject["gender"].safeString),
+			pictureData: nil,
+			friends: []
+		)
 	}
 }
 

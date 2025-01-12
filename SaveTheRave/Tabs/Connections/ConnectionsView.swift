@@ -7,32 +7,39 @@
 
 import SwiftUI
 
+@Observable
+class ConnectionsViewModel {
+	var suggestions: [Profile]?
+	var searchTerm = ""
+}
+
 struct ConnectionsView: View {
 	
-	@State var profile: Profile
-	@State var suggestions: [Profile] = Profile.dummies
-	@State var searchTerm = ""
-	
-	var searchResults: [Profile] {
-		if searchTerm.isEmpty {
-			suggestions
-		} else {
-			suggestions.filter { $0.fits(searchTerm: searchTerm) }
-		}
-	}
+	@Environment(Profile.self) var profile: Profile
+	@State var vm = ConnectionsViewModel()
 	
 	var body: some View {
 		NavigationStack {
-			List {
-				ForEach(suggestions) { profile in
-					NavigationLink(value: profile) {
-						ProfileListEntryView(profile: profile)
+			Group {
+				if let suggestions = vm.suggestions {
+					List(suggestions) { profile in
+						NavigationLink {
+							ProfileDetailView(profile: profile)
+						} label: {
+							ProfileListEntryView(profile: profile)
+						}
 					}
+					.searchable(text: $vm.searchTerm)
+					.onChange(of: vm.searchTerm) { oldValue, newValue in
+						fetchSuggestions()
+					}
+					.refreshable {
+						fetchSuggestions()
+					}
+				} else {
+					ProgressView()
+						.progressViewStyle(.circular)
 				}
-				.searchable(text: $searchTerm)
-			}
-			.navigationDestination(for: Profile.self) { profile in
-				ProfileDetailView(profile: profile)
 			}
 			.navigationTitle("Connections")
 			.toolbar {
@@ -41,9 +48,26 @@ struct ConnectionsView: View {
 				}
 			}
 		}
+		.onAppear {
+			fetchSuggestions()
+		}
+	}
+	
+	func fetchSuggestions() {
+		UserSearchEndpoint(userName: vm.searchTerm)
+			.sendRequest { result in
+				if case .success(let data) = result {
+					if let jsonArray = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] {
+						withAnimation {
+							vm.suggestions = jsonArray.map { Profile.load(from: $0) }
+						}
+					}
+				}
+			}
 	}
 }
 
 #Preview {
-	ConnectionsView(profile: .dummy, suggestions: Profile.dummies)
+	ConnectionsView()
+		.environment(Profile.dummy)
 }

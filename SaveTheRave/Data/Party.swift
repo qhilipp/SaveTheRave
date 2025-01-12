@@ -53,17 +53,30 @@ extension Party {
 	static func load(from data: Data) -> Party? {
 
 		if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+			
+			var items: [String: Profile?] = [:]
+			
+			for item in jsonObject["items"] as! [[String: Any]] {
+				let itemName = item["name"].safeString!
+				
+				if let broughtBy = item["brought_by"] as? [String: Any] {
+					items[itemName] = Profile.load(from: broughtBy)
+				} else {
+					items[itemName] = Optional(Optional(nil))
+				}
+			}
+			
 			let party = Party(
 				id: jsonObject["id"] as! Int,
 				name: jsonObject["name"].safeString!,
 				date: jsonObject["time"].safeString!.date,
-				creator: .philipp,
+				creator: Profile.load(from: jsonObject["host"] as! [String: Any]),
 				description: jsonObject["description"].safeString ?? "",
 				location: jsonObject["location"].safeString!,
 				friendDepth: jsonObject["invitation_level"] as! Int,
 				pictureData: nil,
-				items: [:],
-				attendees: []
+				items: items,
+				attendees: (jsonObject["participants"] as! [[String: Any]]).map { Profile.load(from: $0) }
 			)
 			return party
 		}

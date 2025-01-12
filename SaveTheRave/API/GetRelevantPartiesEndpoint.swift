@@ -1,5 +1,5 @@
 //
-//  GetJoinablePartiesEndpoint.swift
+//  GetRelevantPartiesEndpoint.swift
 //  SaveTheRave
 //
 //  Created by Philipp Kathöfer on 11.01.2025.
@@ -7,15 +7,14 @@
 
 import Foundation
 
-struct GetJoinablePartiesEndpoint: Endpoint {
-	let path = "app/party/joinables"
+struct GetRelevantPartiesEndpoint: Endpoint {
+	let path = "app/party/relevants"
 	let method = "GET"
-	let body: Data? = nil
 	var headers: [String: String]
 	
-	init(token: String) {
+	init() {
 		self.headers = [
-			"Authorization": token,
+			"Authorization": UserDefaults.standard.string(forKey: "token")!,
 			"Content-Type": "application/json"
 		]
 	}

@@ -10,19 +10,14 @@ import Foundation
 struct LoginEndpoint: Endpoint {
 	let path = "api-token-auth"
 	let method = "POST"
-	let body: Data?
+	let parameters: [String : Any]?
 	var headers: [String: String]
 	
 	init(username: String, password: String) {
-		self.headers = [
-			"Content-Type": "application/json"
-		]
-		
-		let parameters: [String: Any] = [
+		self.headers = ["Content-Type": "application/json"]
+		self.parameters = [
 			"username": username,
 			"password": password
 		]
-		
-		self.body = try? JSONSerialization.data(withJSONObject: parameters, options: [])
 	}
 }

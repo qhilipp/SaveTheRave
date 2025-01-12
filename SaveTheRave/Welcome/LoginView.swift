@@ -22,8 +22,12 @@ struct LoginView: View {
 					.sendRequest { result in
 						switch result {
 							case .success(let data):
-								UserDefaults.standard.set("", forKey: "token")
-								action()
+								if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+									if let token = jsonObject["token"] as? String {
+										UserDefaults.standard.set("Token \(token)", forKey: "token")
+										action()
+									}
+								}
 							case .failure(let error):
 								print(error)
 						}

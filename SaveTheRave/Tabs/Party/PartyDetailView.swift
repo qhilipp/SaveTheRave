@@ -12,6 +12,10 @@ struct PartyDetailView: View {
 	@State var party: Party
 	@State var profile: Profile
 	
+	var confirmationPayload: (String, Endpoint) {
+		party.attendees.contains(profile) ? ("Leave", LeavePartyEndpoint(partyId: party.id)) : ("Join", JoinPartyEndpoint(partyId: party.id))
+	}
+	
     var body: some View {
 		ZStack(alignment: .bottom) {
 			ScrollView {
@@ -27,28 +31,40 @@ struct PartyDetailView: View {
 					Text(party.description)
 						.foregroundStyle(.secondary)
 					
-					ScrollView(.horizontal) {
+					ScrollView(.horizontal, showsIndicators: false) {
 						HStack {
 							ForEach(Array(party.items.keys).sorted(), id: \.self) { key in
-								ItemObtainmentView(profile: profile, item: key, obtainer: party.items[key]!)
+								ItemView(profile: profile, item: key, obtainer: party.items[key]!)
+									.onTapGesture {
+//										AssignToItemEndpoint(itemId: key)
+									}
 							}
 						}
 					}
 					
 					ForEach(party.attendees) { attendee in
 						ProfileListEntryView(profile: attendee)
+							.transition(AnyTransition.scale)
 					}
 					
 				}
 			}
-			ConfirmationButton("Join") {
-				
+			
+			ConfirmationButton(confirmationPayload.0) {
+				confirmationPayload.1
+					.sendRequest { result in
+						if case .success(let data) = result {
+							if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+								let newParticipants = jsonObject["participants"] as? [[String: Any]]
+								withAnimation {
+									party.attendees = newParticipants?.map { Profile.load(from: $0) } ?? []
+								}
+							}
+						}
+					}
 			}
-			.padding(.bottom)
-			.padding(.bottom)
 		}
 		.padding()
-		.ignoresSafeArea()
     }
 }
 

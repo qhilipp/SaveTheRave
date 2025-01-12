@@ -13,7 +13,7 @@ protocol Endpoint {
 	var url: URL { get }
 	var method: String { get }
 	var headers: [String: String] { get set }
-	var body: Data? { get }
+	var parameters: [String: Any]? { get }
 	var debug: Bool { get }
 	
 	func sendRequest(completion: @escaping (Result<Data, Error>) -> Void)
@@ -25,11 +25,13 @@ extension Endpoint {
 		"http://169.231.139.207:8000/"
 	}
 	
+	var parameters: [String: Any]? { nil }
+	
 	var url: URL {
 		URL(string: "\(baseURL)\(path)/")!
 	}
 	
-	var debug: Bool { false }
+	var debug: Bool { true }
 	
 	var cURL: String {
 		var curlCommand = "curl"
@@ -44,8 +46,7 @@ extension Endpoint {
 				curlCommand += " -H '\(key): \(value)'"
 			}
 			
-			if let bodyData = body,
-			   let bodyString = String(data: bodyData, encoding: .utf8) {
+			if let parameters, let bodyData = try? JSONSerialization.data(withJSONObject: parameters, options: []), let bodyString = String(data: bodyData, encoding: .utf8) {
 				curlCommand += " --data '\(bodyString)'"
 			}
 			
@@ -61,7 +62,10 @@ extension Endpoint {
 		var request = URLRequest(url: url, timeoutInterval: Double.infinity)
 		request.httpMethod = method
 		request.allHTTPHeaderFields = headers
-		request.httpBody = body
+		
+		if let parameters, let bodyData = try? JSONSerialization.data(withJSONObject: parameters, options: []) {
+			request.httpBody = bodyData
+		}
 		
 		let task = URLSession.shared.dataTask(with: request) { data, response, error in
 			if let error = error {
