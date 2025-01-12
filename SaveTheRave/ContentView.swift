@@ -31,6 +31,12 @@ class ViewModel {
 			}
 	}
 	
+	func logout() {
+		UserDefaults.standard.removeObject(forKey: "token")
+		profile = nil
+		showWelcomePipeline = true
+	}
+	
 }
 
 struct ContentView: View {
@@ -55,6 +61,7 @@ struct ContentView: View {
 				}
 			}
 			.environment(profile)
+			.environment(vm)
 			.onAppear {
 				UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
 					if let error = error {

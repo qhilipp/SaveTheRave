@@ -57,7 +57,6 @@ struct ProfileListEntryView: View {
 									break
 							}
 						}
-						.disabled(vm.friendStatus == .unknown)
 						.buttonStyle(.plain)
 						.foregroundStyle(Color.accentColor)
 					} else {
