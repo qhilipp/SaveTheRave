@@ -23,8 +23,42 @@ struct ProfileEditorIcon: View {
 			}
 			.sheet(isPresented: $showProfileEditor) {
 				ProfileEditorView(profile: $profile) {
-					
+				} extraInput: {
+					Section("Friend requests") {
+						ForEach(profile.friendRequests.sorted(), id: \.self) { profileId in
+							HStack {
+								Text("\(profileId)")
+								Button("Accept") {
+									accept(friend: profileId)
+								}
+							}
+						}
+						.onDelete { indexSet in
+							delete(at: indexSet)
+						}
+					}
 				}
+			}
+	}
+	
+	func accept(friend id: Int) {
+		AcceptFriendEndpoint(id: id)
+			.sendRequest { result in
+				profile.friendRequests.removeAll(where: { $0 == id })
+				profile.friends.append(id)
+			}
+	}
+	
+	func delete(at indexSet: IndexSet) {
+		for index in indexSet {
+			decline(friend: profile.friendRequests.sorted()[index])
+		}
+	}
+	
+	func decline(friend id: Int) {
+		DeclineFriendEndpoint(id: id)
+			.sendRequest { result in
+				profile.friendRequests.removeAll(where: { $0 == id })
 			}
 	}
 }

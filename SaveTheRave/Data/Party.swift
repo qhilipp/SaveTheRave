@@ -106,7 +106,7 @@ extension Party {
 	}
 	
 	static var philippsBirthday: Party {
-		Party(id: 123456789, name: "Philipp's 21st", date: Date(timeIntervalSince1970: 1743278400), creator: .philipp, description: "Another year, another party, this time and for the first time using the new best way to organize parties: with SaveTheRave!", location: "Philipp's Home", friendDepth: 2, pictureData: UIImage(named: "philippParty")?.pngData(), items: ["Bacardí Razz": nil, "Chicken with Rice 💪": .sven], attendees: [.sven, .tyler, .philipp], maxAttendees: 50)
+		Party(id: 123456789, name: "Philipp's 21st", date: Date(timeIntervalSince1970: 1743278400), creator: .philipp, description: "Another year, another party, this time and for the first time using the new best way to organize parties: with SaveTheRave!", location: "Philipp's Home", friendDepth: 1, pictureData: UIImage(named: "philippParty")?.pngData(), items: ["Bacardí Razz": nil, "Chicken with Rice 💪": .sven], attendees: [.sven, .tyler, .philipp], maxAttendees: 50)
 	}
 	
 	static var endOfQuarter: Party {

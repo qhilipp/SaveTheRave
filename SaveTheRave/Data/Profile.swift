@@ -19,7 +19,8 @@ class Profile: Identifiable, Codable {
 	var birthday: Date?
 	var gender: Gender
 	var pictureData: Data?
-	var friends: [Profile]
+	var friends: [Int]
+	var friendRequests: [Int]
 	
 	var fullName: String {
 		firstName + " " + (lastName ?? "")
@@ -41,7 +42,7 @@ class Profile: Identifiable, Codable {
 		}
 	}
 	
-	init(id: Int, userName: String, firstName: String, lastName: String? = nil, phoneNumber: String? = nil, instagram: String? = nil, birthday: Date? = nil, gender: Gender, pictureData: Data? = nil, friends: [Profile] = []) {
+	init(id: Int, userName: String, firstName: String, lastName: String? = nil, phoneNumber: String? = nil, instagram: String? = nil, birthday: Date? = nil, gender: Gender, pictureData: Data? = nil, friends: [Int] = [], friendRequests: [Int] = []) {
 		self.id = id
 		self.userName = userName
 		self.firstName = firstName
@@ -52,6 +53,7 @@ class Profile: Identifiable, Codable {
 		self.gender = gender
 		self.pictureData = pictureData
 		self.friends = friends
+		self.friendRequests = friendRequests
 	}
 }
 
@@ -75,7 +77,8 @@ extension Profile {
 			birthday: jsonObject["birthday"].safeString.date,
 			gender: .init(from: jsonObject["gender"].safeString),
 			pictureData: nil,
-			friends: []
+			friends: (jsonObject["friends"] as! [Any]).map { Int($0 as! String)! },
+			friendRequests: (jsonObject["received_requests"] as! [Any]).map { Int($0 as! String)! }
 		)
 	}
 }
@@ -98,7 +101,7 @@ extension Profile {
 	}
 	
 	static var philipp: Profile {
-		Profile(id: 123, userName: "qhilipp", firstName: "Philipp", lastName: "Kathöfer", phoneNumber: "‭(805) 896-7985‬", instagram: "qhilipp.k", birthday: Date(timeIntervalSince1970: 1090692414), gender: .male, pictureData: UIImage(named: "philippParty")?.pngData(), friends: [sven, tyler, tom])
+		Profile(id: 123, userName: "qhilipp", firstName: "Philipp", lastName: "Kathöfer", phoneNumber: "‭(805) 896-7985‬", instagram: "qhilipp.k", birthday: Date(timeIntervalSince1970: 1090692414), gender: .male, pictureData: UIImage(named: "philippParty")?.pngData(), friends: [sven.id, tyler.id, tom.id])
 	}
 	
 	static var sven: Profile {
