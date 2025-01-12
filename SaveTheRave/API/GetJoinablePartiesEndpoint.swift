@@ -1,5 +1,5 @@
 //
-//  GetUserEndpoint.swift
+//  GetJoinablePartiesEndpoint.swift
 //  SaveTheRave
 //
 //  Created by Philipp Kathöfer on 11.01.2025.
@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct GetUserEndpoint: Endpoint {
-	let path = "app/user"
+struct GetJoinablePartiesEndpoint: Endpoint {
+	let path = "app/party/joinables"
 	let method = "GET"
 	let body: Data? = nil
 	var headers: [String: String]

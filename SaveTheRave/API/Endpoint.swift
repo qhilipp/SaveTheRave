@@ -22,14 +22,14 @@ protocol Endpoint {
 extension Endpoint {
 	
 	var baseURL: String {
-		"http://169.231.139.207:8000/app/"
+		"http://169.231.139.207:8000/"
 	}
 	
 	var url: URL {
 		URL(string: "\(baseURL)\(path)/")!
 	}
 	
-	var debug: Bool { true }
+	var debug: Bool { false }
 	
 	var cURL: String {
 		var curlCommand = "curl"

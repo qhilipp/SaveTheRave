@@ -50,6 +50,29 @@ class Party: Identifiable {
 }
 
 extension Party {
+	static func load(from data: Data) -> Party? {
+
+		if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+			let party = Party(
+				id: jsonObject["id"] as! Int,
+				name: jsonObject["name"].safeString!,
+				date: jsonObject["time"].safeString!.date,
+				creator: .philipp,
+				description: jsonObject["description"].safeString ?? "",
+				location: jsonObject["location"].safeString!,
+				friendDepth: jsonObject["invitation_level"] as! Int,
+				pictureData: nil,
+				items: [:],
+				attendees: []
+			)
+			return party
+		}
+
+		return nil
+	}
+}
+
+extension Party {
 	
 	static var empty: Party {
 		Party(id: 0, name: "", date: .now, creator: .empty, description: "", location: "", friendDepth: 0, pictureData: nil, items: [:], attendees: [])

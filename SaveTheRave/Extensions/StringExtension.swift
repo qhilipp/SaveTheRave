@@ -40,9 +40,27 @@ extension String? {
 	var date: Date? {
 		guard let formatted = self else { return nil }
 		
-		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = "yyyy-MM-dd"
-		return dateFormatter.date(from: formatted)
+		let dateFormats = [
+			"yyyy-MM-dd'T'HH:mm:ssZ", // z.B. "2023-12-31T20:00:00Z"
+			"yyyy-MM-dd",             // z.B. "2023-12-31"
+			"MM/dd/yyyy",             // z.B. "12/31/2023"
+			"dd-MM-yyyy",             // z.B. "31-12-2023"
+			"yyyy/MM/dd",             // z.B. "2023/12/31"
+			"MM-dd-yyyy"              // z.B. "12-31-2023"
+		]
+		
+		for format in dateFormats {
+			let formatter = DateFormatter()
+			formatter.dateFormat = format
+			formatter.locale = Locale(identifier: "en_US_POSIX")
+			formatter.timeZone = TimeZone(secondsFromGMT: 0)
+			
+			if let date = formatter.date(from: formatted) {
+				return date
+			}
+		}
+		
+		return nil
 	}
 	
 }

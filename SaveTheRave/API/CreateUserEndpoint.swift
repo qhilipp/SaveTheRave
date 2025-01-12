@@ -8,7 +8,7 @@
 import Foundation
 
 struct CreateUserEndpoint: Endpoint {
-	let path = "user/create"
+	let path = "app/user/create"
 	let method = "POST"
 	let body: Data?
 	var headers: [String: String] = ["Content-Type": "application/json"]

@@ -9,7 +9,8 @@ import SwiftUI
 
 struct WelcomeView: View {
 	
-	var action: () -> Void
+	let action: () -> Void
+	let loginAction: () -> Void
 	
 	var body: some View {
 		VStack {
@@ -30,6 +31,10 @@ struct WelcomeView: View {
 				
 				ConfirmationButton("Continue", action: action)
 					.padding(.bottom)
+				
+				Button("Log in") {
+					loginAction()
+				}
 			}
 			.padding(.horizontal)
 		}
@@ -37,5 +42,5 @@ struct WelcomeView: View {
 }
 
 #Preview {
-	WelcomeView() {}
+	WelcomeView() {} loginAction: {}
 }

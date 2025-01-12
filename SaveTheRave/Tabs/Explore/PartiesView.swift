@@ -7,33 +7,55 @@
 
 import SwiftUI
 
+@Observable
+class PartiesViewModel {
+	var joinableParties: [Party]?
+	var searchTerm = ""
+	var showAddParty = false
+}
+
 struct PartiesView: View {
 	
-	@State var profile: Profile
-	@State var suggestions: [Party] = Party.dummies
-	@State var searchTerm = ""
+	@Environment(Profile.self) var profile: Profile
+	@State var vm = PartiesViewModel()
 	
-	var searchResults: [Party] {
-		if searchTerm.isEmpty {
-			suggestions
+	var searchResults: [Party]? {
+		if let joinableParties = vm.joinableParties {
+			if vm.searchTerm.isEmpty {
+				joinableParties
+			} else {
+				joinableParties.filter { $0.fits(searchTerm: vm.searchTerm) }
+			}
 		} else {
-			suggestions.filter { $0.fits(searchTerm: searchTerm) }
+			nil
 		}
+	}
+	
+	init() {
+		fetchJoinableParties()
 	}
 	
 	var body: some View {
 		NavigationStack {
 			ScrollView {
 				VStack {
-					ForEach(suggestions) { party in
-						NavigationLink(value: party) {
-							PartyListEntryView(party: party)
+					if let joinableParties = searchResults {
+						ForEach(joinableParties) { party in
+							NavigationLink(value: party) {
+								PartyListEntryView(party: party)
+							}
+							.buttonStyle(PlainButtonStyle())
 						}
-						.buttonStyle(PlainButtonStyle())
+						.searchable(text: $vm.searchTerm)
+					} else {
+						ProgressView()
+							.progressViewStyle(.circular)
 					}
-					.searchable(text: $searchTerm)
 				}
 				.padding(.horizontal)
+			}
+			.refreshable {
+				fetchJoinableParties()
 			}
 			.navigationDestination(for: Party.self) { party in
 				PartyDetailView(party: party, profile: profile)
@@ -43,11 +65,50 @@ struct PartiesView: View {
 				ToolbarItem(placement: .topBarTrailing) {
 					ProfileEditorIcon(profile: profile)
 				}
+				ToolbarItem(placement: .topBarTrailing) {
+					Button {
+						vm.showAddParty = true
+					} label: {
+						Image(systemName: "plus")
+					}
+				}
+			}
+			.sheet(isPresented: $vm.showAddParty) {
+				PartyEditorView()
+			}
+			.onChange(of: vm.showAddParty) { oldValue, newValue in
+				if !newValue {
+					fetchJoinableParties()
+				}
 			}
 		}
+	}
+	
+	func fetchJoinableParties() {
+		GetJoinablePartiesEndpoint(token: UserDefaults.standard.string(forKey: "token")!)
+			.sendRequest { result in
+				switch result {
+					case .success(let data):
+						vm.joinableParties = []
+						if let jsonArray = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] {
+							for item in jsonArray {
+								do {
+									let partyData = try JSONSerialization.data(withJSONObject: item, options: [])
+									let party = Party.load(from: partyData)
+									vm.joinableParties?.append(party!)
+									print(party!)
+								} catch {
+									print("Fehler beim Umwandeln des Elements in Data: \(error)")
+								}
+							}
+						}
+					case .failure(let error):
+						print(error)
+				}
+			}
 	}
 }
 
 #Preview {
-	PartiesView(profile: .dummy)
+	PartiesView()
 }

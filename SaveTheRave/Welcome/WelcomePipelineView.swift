@@ -22,6 +22,7 @@ struct WelcomePipelineView: View {
 				switch page {
 					case .welcome: welcomeView
 					case .register: registerView
+					case .login: loginView
 				}
 			}
 		}
@@ -30,6 +31,8 @@ struct WelcomePipelineView: View {
 	var welcomeView: some View {
 		WelcomeView {
 			path.append(WelcomePage.register)
+		} loginAction: {
+			path.append(WelcomePage.login)
 		}
 	}
 		
@@ -57,11 +60,18 @@ struct WelcomePipelineView: View {
 		}
 		.navigationTitle("Register")
 	}
+	
+	var loginView: some View {
+		LoginView {
+			action()
+		}
+	}
 }
 
 enum WelcomePage {
 	case welcome
 	case register
+	case login
 }
 
 #Preview {

@@ -71,7 +71,6 @@ extension Profile {
 				pictureData: nil,
 				friends: []
 			)
-			print("laksjdfasdf", profile.firstName)
 			return profile
 		}
 

@@ -12,10 +12,11 @@ class ViewModel {
 	
 	var profile: Profile?
 	var showProfileEditor = false
-	var showWelcomePipeline = UserDefaults.standard.value(forKey: "token") == nil
+	var showWelcomePipeline = true
 	
 	func fetchProfile() {
 		guard let token = UserDefaults.standard.string(forKey: "token") else {
+			showWelcomePipeline = false
 			return
 		}
 		
@@ -44,7 +45,7 @@ struct ContentView: View {
 		if let profile = vm.profile {
 			TabView {
 				Tab("Explore", systemImage: "party.popper.fill") {
-					PartiesView(profile: profile)
+					PartiesView()
 				}
 				Tab("Connections", systemImage: "person.3.fill") {
 					ConnectionsView(profile: profile)

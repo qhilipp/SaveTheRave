@@ -8,9 +8,13 @@
 import Foundation
 
 extension Date {
-	var iso8601String: String {
-		let formatter = ISO8601DateFormatter()
-		return formatter.string(from: self)
+	
+	var formatted: String {
+		Optional(self).formatted
+	}
+	
+	var formattedWithTime: String {
+		Optional(self).formattedWithTime
 	}
 }
 
@@ -21,6 +25,15 @@ extension Date? {
 		
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd"
+		
+		return dateFormatter.string(from: date)
+	}
+	
+	var formattedWithTime: String {
+		guard let date = self else { return "null" }
+		
+		let dateFormatter = ISO8601DateFormatter()
+		dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 		
 		return dateFormatter.string(from: date)
 	}
