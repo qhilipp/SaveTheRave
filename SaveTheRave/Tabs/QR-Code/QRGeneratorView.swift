@@ -10,13 +10,65 @@ import SwiftUI
 import CoreImage.CIFilterBuiltins
 import AVFoundation
 
+
+struct UserSheet: View {
+    let user: Profile
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "person.circle.fill")
+                .font(.system(size: 60))
+                .foregroundColor(.blue)
+            /*
+             var id: Int
+             var userName: String
+             var firstName: String
+             var lastName: String?
+             var phoneNumber: String?
+             var instagram: String?
+             var birthday: Date?
+             var gender: Gender
+             var pictureData: Data?
+             var friends: [Profile]
+             */
+            Text(user.userName)
+                .font(.title)
+                .bold()
+            
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text("Birthday:")
+                        .fontWeight(.semibold)
+                    Text("\(user.birthday)")
+                }
+                
+                HStack {
+                    Text("Email:")
+                        .fontWeight(.semibold)
+                    Text(user.instagram ?? "Not provided")
+                }
+            }
+            .padding()
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(10)
+            
+            Spacer()
+        }
+        .padding()
+        .padding(.top, 40)
+    }
+}
+
+
 struct QRGeneratorView: View {
     @Environment(Profile.self) var profile: Profile
     @State private var qrCode: UIImage?
     @State private var isShowingScanner = false
     @State private var isShowingMessage = false
+    @State private var isShowingUserInfo = false
     @State private var isSuccess = false
     @State private var messageText = ""
+    @State private var currentUser: Profile?
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     private let context = CIContext()
     private let filter = CIFilter.qrCodeGenerator()
@@ -71,6 +123,12 @@ struct QRGeneratorView: View {
         .sheet(isPresented: $isShowingMessage) {
             MessageSheet(isSuccess: isSuccess, message: messageText)
                 .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $isShowingUserInfo) {
+            if let user = currentUser {
+                UserSheet(user: user)
+                    .presentationDetents([.medium])
+            }
         }
     }
     
@@ -131,12 +189,25 @@ struct QRGeneratorView: View {
                                                 }
                                             }
                                         }
-                                        
                                     }
                             }
-                            
+                            // show user information by first getting user infos by GetUserByIdEndpoint(userId).sendRequest { result in {...} }
+                            GetUserByIdEndpoint(id: userId)
+                                            .sendRequest { result in
+                                                if case .success(let data) = result {
+                                                    if let user = try? Profile.load(from: data) {
+                                                        currentUser = user
+                                                        isShowingUserInfo = true
+                                                    }
+                                                }
+                                            }
+                        } else {
+                            isSuccess = false
+                            messageText = "You are not in a party"
+                            isShowingMessage = true
                         }
                     }
+                
             }
         case .failure(let error):
             print("Scanning failed: \(error.localizedDescription)")
