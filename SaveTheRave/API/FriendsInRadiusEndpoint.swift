@@ -1,5 +1,5 @@
 //
-//  RequestFriendEndpoint.swift
+//  FriendsInRadiusEndpoint.swift
 //  SaveTheRave
 //
 //  Created by Philipp Kathöfer on 12.01.2025.
@@ -7,19 +7,19 @@
 
 import Foundation
 
-struct RequestFriendEndpoint: Endpoint {
-	let path = "app/user/send_request"
+struct FriendsInRadiusEndpoint: Endpoint {
+	let path = "app/user/level_friends"
 	let method = "POST"
 	let parameters: [String : Any]?
 	var headers: [String: String]
 	
-	init(id: Int) {
+	init(level: Int) {
 		self.headers = [
 			"Authorization": UserDefaults.standard.string(forKey: "token")!,
 			"Content-Type": "application/json"
 		]
 		self.parameters = [
-			"id": id
+			"level": level
 		]
 	}
 }

@@ -24,6 +24,8 @@ class Party: Identifiable {
 	var items: [String: Profile?]
 	var spotify: String?
 	var attendees: [Profile]
+	var maxAttendees: Int
+	var checkedIn: [Profile]
 	
 	var picture: Image {
 		if let picture = pictureData?.image {
@@ -35,7 +37,7 @@ class Party: Identifiable {
 		}
 	}
 	
-	init(id: Int, name: String, date: Date, creator: Profile, description: String, location: String, friendDepth: Int, pictureData: Data?, items: [String : Profile?], attendees: [Profile]) {
+	init(id: Int, name: String, date: Date, creator: Profile, description: String, location: String, friendDepth: Int, pictureData: Data?, items: [String : Profile?], attendees: [Profile], maxAttendees: Int, checkedIn: [Profile] = []) {
 		self.id = id
 		self.title = name
 		self.date = date
@@ -46,6 +48,8 @@ class Party: Identifiable {
 		self.pictureData = pictureData
 		self.items = items
 		self.attendees = attendees
+		self.maxAttendees = maxAttendees
+		self.checkedIn = checkedIn
 	}
 }
 
@@ -76,7 +80,9 @@ extension Party {
 				friendDepth: jsonObject["invitation_level"] as! Int,
 				pictureData: nil,
 				items: items,
-				attendees: (jsonObject["participants"] as! [[String: Any]]).map { Profile.load(from: $0) }
+				attendees: (jsonObject["participants"] as! [[String: Any]]).map { Profile.load(from: $0) },
+				maxAttendees: jsonObject["max_people"] as! Int,
+				checkedIn: (jsonObject["checked_in"] as! [[String: Any]]).map { Profile.load(from: $0) }
 			)
 			return party
 		}
@@ -88,7 +94,7 @@ extension Party {
 extension Party {
 	
 	static var empty: Party {
-		Party(id: 0, name: "", date: .now, creator: .empty, description: "", location: "", friendDepth: 0, pictureData: nil, items: [:], attendees: [])
+		Party(id: 0, name: "", date: .now, creator: .empty, description: "", location: "", friendDepth: 0, pictureData: nil, items: [:], attendees: [], maxAttendees: 1)
 	}
 	
 	static var dummy: Party {
@@ -100,11 +106,11 @@ extension Party {
 	}
 	
 	static var philippsBirthday: Party {
-		Party(id: 123456789, name: "Philipp's 21st", date: Date(timeIntervalSince1970: 1743278400), creator: .philipp, description: "Another year, another party, this time and for the first time using the new best way to organize parties: with SaveTheRave!", location: "Philipp's Home", friendDepth: 2, pictureData: UIImage(named: "philippParty")?.pngData(), items: ["Bacardí Razz": nil, "Chicken with Rice 💪": .sven], attendees: [.sven, .tyler, .philipp])
+		Party(id: 123456789, name: "Philipp's 21st", date: Date(timeIntervalSince1970: 1743278400), creator: .philipp, description: "Another year, another party, this time and for the first time using the new best way to organize parties: with SaveTheRave!", location: "Philipp's Home", friendDepth: 2, pictureData: UIImage(named: "philippParty")?.pngData(), items: ["Bacardí Razz": nil, "Chicken with Rice 💪": .sven], attendees: [.sven, .tyler, .philipp], maxAttendees: 50)
 	}
 	
 	static var endOfQuarter: Party {
-		Party(id: 987654321, name: "End of Quarter Party", date: Date(timeIntervalSince1970: 1742589000), creator: .tyler, description: "Let's celebrate the end of the quarter", location: "6655 Del Playa", friendDepth: 1, pictureData: nil, items: [:], attendees: [.sven])
+		Party(id: 987654321, name: "End of Quarter Party", date: Date(timeIntervalSince1970: 1742589000), creator: .tyler, description: "Let's celebrate the end of the quarter", location: "6655 Del Playa", friendDepth: 1, pictureData: nil, items: [:], attendees: [.sven], maxAttendees: 420)
 	}
 }
 

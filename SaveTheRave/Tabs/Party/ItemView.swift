@@ -9,9 +9,10 @@ import SwiftUI
 
 struct ItemView: View {
 	
-	@State var profile: Profile
+	var profile: Profile
+	var party: Party
 	@State var item: String
-	@State var obtainer: Profile?
+	@State var obtainer: Profile? = nil
 	
 	var title: String {
 		if let obtainer {
@@ -36,7 +37,10 @@ struct ItemView: View {
 					.clipShape(.circle)
 			} else {
 				Button {
-					
+					AssignToItemEndpoint(itemName: item, partyId: party.id)
+						.sendRequest { result in
+							obtainer = profile
+						}
 				} label: {
 					Image(systemName: "cart.badge.plus")
 						.frame(width: 40, height: 40)
@@ -53,5 +57,5 @@ struct ItemView: View {
 }
 
 #Preview {
-	ItemView(profile: .dummy, item: "Bacardí Razz", obtainer: nil)
+	ItemView(profile: .dummy, party: .dummy, item: "Bacardí Razz")
 }

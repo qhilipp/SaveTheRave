@@ -34,10 +34,7 @@ struct PartyDetailView: View {
 					ScrollView(.horizontal, showsIndicators: false) {
 						HStack {
 							ForEach(Array(party.items.keys).sorted(), id: \.self) { key in
-								ItemView(profile: profile, item: key, obtainer: party.items[key]!)
-									.onTapGesture {
-//										AssignToItemEndpoint(itemId: key)
-									}
+								ItemView(profile: profile, party: party, item: key)
 							}
 						}
 					}
@@ -46,7 +43,6 @@ struct PartyDetailView: View {
 						ProfileListEntryView(profile: attendee)
 							.transition(AnyTransition.scale)
 					}
-					
 				}
 			}
 			

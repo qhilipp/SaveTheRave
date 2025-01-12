@@ -13,10 +13,11 @@ struct AssignToItemEndpoint: Endpoint {
 	let parameters: [String: Any]?
 	var headers: [String: String] = ["Content-Type": "application/json"]
 	
-	init(itemId: Int) {
+	init(itemName: String, partyId: Int) {
 		self.headers["Authorization"] = UserDefaults.standard.string(forKey: "token")
 		self.parameters = [
-			"item_id": itemId
+			"item_name": itemName,
+			"party_id": partyId
 		]
 	}
 }
