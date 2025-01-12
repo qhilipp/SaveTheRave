@@ -26,7 +26,7 @@ struct ConnectionsView: View {
 						NavigationLink {
 							ProfileDetailView(profile: profile)
 						} label: {
-							ProfileListEntryView(profile: profile)
+							ProfileListEntryView(profileId: profile.id)
 						}
 					}
 					.searchable(text: $vm.searchTerm)

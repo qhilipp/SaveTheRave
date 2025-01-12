@@ -113,8 +113,8 @@ struct PartyEditorView: View {
 					.onChange(of: vm.party.friendDepth) {
 						vm.fetchFriendsInRadius()
 					}
-					List(Profile.dummies, id: \.id) { profile in
-						ProfileListEntryView(profile: profile)
+					ForEach(vm.peoplePreview, id: \.id) { profile in
+						ProfileListEntryView(profileId: profile.id)
 					}
 				}
 			}

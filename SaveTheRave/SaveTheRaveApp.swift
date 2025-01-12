@@ -39,7 +39,7 @@ struct SaveTheRaveApp: App {
 		let notificationCenter = UNUserNotificationCenter.current()
 			
 		let content = UNMutableNotificationContent()
-		content.title = notification.sender.fullName
+		content.title = notification.sender?.fullName ?? "Anonymous"
 		content.body = notification.message
 		content.sound = .default
 		

@@ -12,7 +12,7 @@ struct GetUserByIdEndpoint: Endpoint {
     let method = "GET"
     var headers: [String: String]
 
-    init(id: String) {
+    init(id: Int) {
         path = "\(path)/\(id)"
         self.headers = [
             "Authorization": UserDefaults.standard.string(forKey: "token")!,

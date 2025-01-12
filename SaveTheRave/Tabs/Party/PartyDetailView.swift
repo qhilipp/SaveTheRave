@@ -40,7 +40,7 @@ struct PartyDetailView: View {
 					}
 					
 					ForEach(party.attendees) { attendee in
-						ProfileListEntryView(profile: attendee)
+						ProfileListEntryView(profileId: attendee.id)
 							.transition(AnyTransition.scale)
 					}
 				}

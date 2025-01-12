@@ -26,6 +26,7 @@ struct ProfileEditorIcon: View {
 				} extraInput: {
 					Section("Friend requests") {
 						ForEach(profile.friendRequests.sorted(), id: \.self) { profileId in
+							ProfileListEntryView(profileId: profileId)
 							HStack {
 								Text("\(profileId)")
 								Button("Accept") {

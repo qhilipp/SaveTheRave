@@ -192,7 +192,7 @@ struct QRGeneratorView: View {
                                     }
                             }
                             // show user information by first getting user infos by GetUserByIdEndpoint(userId).sendRequest { result in {...} }
-                            GetUserByIdEndpoint(id: userId)
+                            GetUserByIdEndpoint(id: Int(userId)!)
                                             .sendRequest { result in
                                                 if case .success(let data) = result {
                                                     if let user = try? Profile.load(from: data) {

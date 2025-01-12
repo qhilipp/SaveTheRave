@@ -77,8 +77,8 @@ extension Profile {
 			birthday: jsonObject["birthday"].safeString.date,
 			gender: .init(from: jsonObject["gender"].safeString),
 			pictureData: nil,
-			friends: (jsonObject["friends"] as! [Any]).map { Int($0 as! String)! },
-			friendRequests: (jsonObject["received_requests"] as! [Any]).map { Int($0 as! String)! }
+			friends: jsonObject["friends"] as! [Int],
+			friendRequests: jsonObject["received_requests"] as! [Int]
 		)
 	}
 }

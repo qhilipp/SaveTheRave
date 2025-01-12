@@ -47,8 +47,8 @@ struct ProfileDetailView: View {
 						ContactLinkView(contactLink: .website(url: profile.instagramURL, name: instagram))
 					}
 					
-					ForEach(profile.friends) { friend in
-						ProfileListEntryView(profile: friend)
+					ForEach(profile.friends, id: \.self) { friend in
+						ProfileListEntryView(profileId: friend)
 					}
 				}
 				.padding()
