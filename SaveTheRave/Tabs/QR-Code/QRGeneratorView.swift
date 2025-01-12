@@ -178,7 +178,9 @@ struct QRGeneratorView: View {
                                                     isSuccess = false
                                                     messageText = error
                                                     isShowingMessage = true
-                                                } else {
+                                                }
+                                                }
+                                            else {
                                                     // show user information by first getting user infos by GetUserByIdEndpoint(userId).sendRequest { result in {...} }
                                                     GetUserByIdEndpoint(id: Int(userId)!)
                                                                     .sendRequest { result in
@@ -189,7 +191,6 @@ struct QRGeneratorView: View {
                                                                             }
                                                                         }
                                                                     }
-                                                }
                                             }
                                         }
                                     }
