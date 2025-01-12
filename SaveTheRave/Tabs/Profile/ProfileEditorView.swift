@@ -116,6 +116,7 @@ struct ProfileEditorView<Content: View>: View {
 				}
 				.padding(.bottom)
 				.padding(.bottom)
+				.padding(.bottom)
 			}
 			
 			ConfirmationButton(confirmationText) {

@@ -51,7 +51,6 @@ struct ProfileDetailView: View {
 						ProfileListEntryView(profileId: friend)
 					}
 				}
-				.padding()
 			}
 			
 			if friendStatus != .friend {
@@ -65,6 +64,7 @@ struct ProfileDetailView: View {
 				.padding()
 			}
 		}
+		.padding()
 		.onAppear {
 			fetchFriendStatus()
 		}

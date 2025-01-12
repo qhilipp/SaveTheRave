@@ -29,6 +29,10 @@ class Profile: Identifiable, Codable {
 	var picture: Image {
 		if let picture = pictureData?.image {
 			picture
+		} else if firstName == "Alice" {
+			Image("alice")
+		} else if firstName == "Bob" {
+			Image("bob")
 		} else {
 			Image(systemName: "person.circle.fill")
 		}
