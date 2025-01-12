@@ -10,7 +10,7 @@ import SwiftUI
 struct ProfileListEntryView: View {
 	
 	@State var profile: Profile
-	
+	@State var friendStatus: FriendStatus = .unknown
 	
 	var body: some View {
 		HStack(alignment: .top) {

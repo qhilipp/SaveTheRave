@@ -10,11 +10,11 @@ import SwiftUI
 struct ProfileDetailView: View {
 	
 	var profile: Profile
-	@State var friendStatus: FriendStatus?
+	@State var friendStatus: FriendStatus = .unknown
 	
 	var requestText: String {
 		switch friendStatus {
-			case .friend, nil:
+			case .friend, .unknown:
 				"..."
 			case .noFriend:
 				"Request"
@@ -61,7 +61,7 @@ struct ProfileDetailView: View {
 							fetchFriendStatus()
 						}
 				}
-				.disabled([nil, .pending].contains(friendStatus))
+				.disabled([.unknown, .pending].contains(friendStatus))
 				.padding()
 			}
 		}
@@ -86,7 +86,7 @@ struct ProfileDetailView: View {
 			.sendRequest { result in
 				if case .success(let data) = result {
 					if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-						friendStatus = FriendStatus(from: (jsonObject["are_friends"].safeString as String?) ?? "false")
+						friendStatus = FriendStatus(from: (jsonObject["are_friends"].safeString as String?) ?? "unknown")
 					}
 				}
 			}
