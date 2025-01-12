@@ -16,7 +16,7 @@ struct ContentView: View {
 	var body: some View {
 		TabView {
 			Tab("Explore", systemImage: "party.popper.fill") {
-				Text("Coming soon ⏰")
+				PartiesView(profile: profile)
 			}
 			Tab("Connections", systemImage: "person.3.fill") {
 				ConnectionsView(profile: profile)

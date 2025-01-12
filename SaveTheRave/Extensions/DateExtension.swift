@@ -13,3 +13,16 @@ extension Date {
 		return formatter.string(from: self)
 	}
 }
+
+extension Date? {
+	
+	var formatted: String {
+		guard let date = self else { return "null" }
+		
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "yyyy-MM-dd"
+		
+		return dateFormatter.string(from: date)
+	}
+	
+}

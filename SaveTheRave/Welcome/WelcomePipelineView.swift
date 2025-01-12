@@ -36,12 +36,12 @@ struct WelcomePipelineView: View {
 		ProfileEditorView(profile: $profile, confirmationText: "Register") {
 			CreateUserEndpoint(profile: profile, password: password)
 				.sendRequest { result in
-//				switch result {
-//					case .success(let data):
-//						print(data)
-//					case .failure(let error):
-//						print(error)
-//				}
+				switch result {
+					case .success(let data):
+						print(String(data: data, encoding: .utf8)!)
+					case .failure(let error):
+						print(error)
+				}
 			}
 			dismiss()
 		} extraInput: {

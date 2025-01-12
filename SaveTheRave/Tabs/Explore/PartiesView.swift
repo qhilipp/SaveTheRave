@@ -36,7 +36,7 @@ struct PartiesView: View {
 				.padding(.horizontal)
 			}
 			.navigationDestination(for: Party.self) { party in
-				ProfileDetailView(profile: profile)
+				PartyDetailView(party: party, profile: profile)
 			}
 			.navigationTitle("Explore")
 			.toolbar {

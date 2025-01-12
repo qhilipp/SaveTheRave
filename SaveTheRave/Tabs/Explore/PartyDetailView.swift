@@ -10,36 +10,48 @@ import SwiftUI
 struct PartyDetailView: View {
 	
 	@State var party: Party
+	@State var profile: Profile
 	
     var body: some View {
-		ScrollView {
-			VStack(alignment: .leading) {
-				party.picture
-					.resizable()
-					.frame(maxWidth: .infinity, maxHeight: 300)
-					.scaledToFill()
-				
-				Text(party.title)
-					.font(.system(.largeTitle, design: .rounded, weight: .bold))
-				
-				Text(party.description)
-					.foregroundStyle(.secondary)
-				
-				
-				
-				ForEach(party.attendees) { attendee in
-					ProfileListEntryView(profile: attendee)
-				}
-				
-				ConfirmationButton("Join") {
+		ZStack(alignment: .bottom) {
+			ScrollView {
+				VStack(alignment: .leading) {
+					party.picture
+						.resizable()
+						.frame(maxWidth: .infinity, maxHeight: 300)
+						.scaledToFill()
+					
+					Text(party.title)
+						.font(.system(.largeTitle, design: .rounded, weight: .bold))
+					
+					Text(party.description)
+						.foregroundStyle(.secondary)
+					
+					ScrollView(.horizontal) {
+						HStack {
+							ForEach(Array(party.items.keys).sorted(), id: \.self) { key in
+								ItemObtainmentView(profile: profile, item: key, obtainer: party.items[key]!)
+							}
+						}
+					}
+					
+					ForEach(party.attendees) { attendee in
+						ProfileListEntryView(profile: attendee)
+					}
 					
 				}
 			}
-			.padding()
+			ConfirmationButton("Join") {
+				
+			}
+			.padding(.bottom)
+			.padding(.bottom)
 		}
+		.padding()
+		.ignoresSafeArea()
     }
 }
 
 #Preview {
-	PartyDetailView(party: .dummy)
+	PartyDetailView(party: .dummy, profile: .dummy)
 }

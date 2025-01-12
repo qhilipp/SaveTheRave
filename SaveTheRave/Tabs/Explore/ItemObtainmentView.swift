@@ -13,10 +13,18 @@ struct ItemObtainmentView: View {
 	@State var item: String
 	@State var obtainer: Profile?
 	
+	var title: String {
+		if let obtainer {
+			"\(obtainer.fullName) brings:"
+		} else {
+			"Still needed:"
+		}
+	}
+	
     var body: some View {
 		HStack {
 			VStack(alignment: .leading, spacing: 0) {
-				Text("Still needed:")
+				Text(title)
 					.font(.footnote)
 					.foregroundStyle(.secondary)
 				Text(item)

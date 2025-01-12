@@ -8,24 +8,21 @@
 import Foundation
 
 struct CreateUserEndpoint: Endpoint {
-	let path: String = "/app/user/create"
-	let method: String = "POST"
-	let headers: [String: String]? = [
-		"Content-Type": "application/json"
-	]
+	let url = URL(string: "http://169.231.139.207:8000/app/user/create")!
+	let method = "POST"
 	let body: Data?
 	
 	init(profile: Profile, password: String) {
-		let encoder = JSONEncoder()
-		encoder.outputFormatting = .prettyPrinted
-		encoder.dateEncodingStrategy = .iso8601
-
-		do {
-			let jsonData = try encoder.encode(profile)
-			body = jsonData
-		} catch {
-			print("Fehler beim Kodieren: \(error)")
-			body = nil
-		}
+		let parameters: [String: Any] = [
+			"username": profile.userName,
+			"password": password,
+			"birthday": profile.birthday.formatted,
+			"gender": profile.gender.description,
+			"phone_number": profile.phoneNumber ?? NSNull(),
+			"friends": [],
+			"instagram": profile.instagram ?? NSNull()
+		]
+		
+		self.body = try? JSONSerialization.data(withJSONObject: parameters, options: [])
 	}
 }

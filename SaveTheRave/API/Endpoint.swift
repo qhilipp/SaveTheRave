@@ -8,53 +8,43 @@
 import Foundation
 
 protocol Endpoint {
-	var baseURL: URL { get }
-	var path: String { get }
+	var url: URL { get }
 	var method: String { get }
-	var headers: [String: String]? { get }
+	var headers: [String: String] { get }
 	var body: Data? { get }
 	
-	func createRequest() -> URLRequest
+	func sendRequest(completion: @escaping (Result<Data, Error>) -> Void)
 }
 
 extension Endpoint {
-	var baseURL: URL {
-		return URL(string: "http://0.0.0.0:8000")!
-	}
 	
-	func createRequest() -> URLRequest {
-		var request = URLRequest(url: baseURL.appendingPathComponent(path))
-		request.httpMethod = method
-		headers?.forEach { key, value in
-			request.setValue(value, forHTTPHeaderField: key)
-		}
-		request.httpBody = body
-		return request
+	var headers: [String: String] {
+		["Content-Type": "application/json"]
 	}
 	
 	func sendRequest(completion: @escaping (Result<Data, Error>) -> Void) {
-			let request = createRequest()
-			
-			let task = URLSession.shared.dataTask(with: request) { data, response, error in
-				if let error = error {
-					completion(.failure(error))
-					return
-				}
-				
-				guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-					let statusError = NSError(domain: "InvalidResponse", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
-					completion(.failure(statusError))
-					return
-				}
-				
-				if let data = data {
-					completion(.success(data))
-				} else {
-					let noDataError = NSError(domain: "NoData", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data received from server"])
-					completion(.failure(noDataError))
-				}
+		var request = URLRequest(url: url, timeoutInterval: Double.infinity)
+		request.httpMethod = method
+		headers.forEach { key, value in
+			request.addValue(value, forHTTPHeaderField: key)
+		}
+		request.httpBody = body
+		
+		let task = URLSession.shared.dataTask(with: request) { data, response, error in
+			if let error = error {
+				completion(.failure(error))
+				return
 			}
 			
-			task.resume()
+			guard let data = data else {
+				let error = NSError(domain: "InvalidResponse", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
+				completion(.failure(error))
+				return
+			}
+			
+			completion(.success(data))
 		}
+		
+		task.resume()
+	}
 }
