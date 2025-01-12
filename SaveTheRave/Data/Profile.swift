@@ -10,7 +10,7 @@ import SwiftUI
 
 @Observable
 class Profile: Identifiable, Codable {
-	var id: String
+	var id: Int
 	var userName: String
 	var firstName: String
 	var lastName: String?
@@ -20,7 +20,6 @@ class Profile: Identifiable, Codable {
 	var gender: Gender
 	var pictureData: Data?
 	var friends: [Profile]
-	var token: String
 	
 	var fullName: String {
 		firstName + " " + (lastName ?? "")
@@ -42,7 +41,7 @@ class Profile: Identifiable, Codable {
 		}
 	}
 	
-	init(id: String, userName: String, firstName: String, lastName: String? = nil, phoneNumber: String? = nil, instagram: String? = nil, birthday: Date? = nil, gender: Gender, pictureData: Data? = nil, friends: [Profile] = [], token: String = "") {
+	init(id: Int, userName: String, firstName: String, lastName: String? = nil, phoneNumber: String? = nil, instagram: String? = nil, birthday: Date? = nil, gender: Gender, pictureData: Data? = nil, friends: [Profile] = []) {
 		self.id = id
 		self.userName = userName
 		self.firstName = firstName
@@ -53,13 +52,36 @@ class Profile: Identifiable, Codable {
 		self.gender = gender
 		self.pictureData = pictureData
 		self.friends = friends
-		self.token = token
+	}
+}
+
+extension Profile {
+	static func load(from data: Data) -> Profile? {
+
+		if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+			let profile = Profile(
+				id: jsonObject["id"] as! Int,
+				userName: jsonObject["username"].safeString!,
+				firstName: jsonObject["first_name"].safeString!,
+				lastName: jsonObject["last_name"].safeString,
+				phoneNumber: jsonObject["phone_number"].safeString,
+				instagram: jsonObject["instagram"].safeString,
+				birthday: jsonObject["birthday"].safeString.date,
+				gender: .init(from: jsonObject["gender"].safeString),
+				pictureData: nil,
+				friends: []
+			)
+			print("laksjdfasdf", profile.firstName)
+			return profile
+		}
+
+		return nil
 	}
 }
 
 extension Profile {
 	static var empty: Profile {
-		Profile(id: "", userName: "", firstName: "", gender: .unknown)
+		Profile(id: 0, userName: "", firstName: "", gender: .unknown)
 	}
 	
 	static var dummy: Profile {
@@ -71,19 +93,19 @@ extension Profile {
 	}
 	
 	static var tom: Profile {
-		Profile(id: "123456789abc", userName: "dasTom", firstName: "Tom", lastName: "Eitner", phoneNumber: "+49 123456789", birthday: Date(timeIntervalSince1970: 1090691414), gender: .male, pictureData: nil, friends: [])
+		Profile(id: 123456789, userName: "dasTom", firstName: "Tom", lastName: "Eitner", phoneNumber: "+49 123456789", birthday: Date(timeIntervalSince1970: 1090691414), gender: .male, pictureData: nil, friends: [])
 	}
 	
 	static var philipp: Profile {
-		Profile(id: "123", userName: "qhilipp", firstName: "Philipp", lastName: "Kathöfer", phoneNumber: "‭(805) 896-7985‬", instagram: "qhilipp.k", birthday: Date(timeIntervalSince1970: 1090692414), gender: .male, pictureData: UIImage(named: "philippParty")?.pngData(), friends: [sven, tyler, tom])
+		Profile(id: 123, userName: "qhilipp", firstName: "Philipp", lastName: "Kathöfer", phoneNumber: "‭(805) 896-7985‬", instagram: "qhilipp.k", birthday: Date(timeIntervalSince1970: 1090692414), gender: .male, pictureData: UIImage(named: "philippParty")?.pngData(), friends: [sven, tyler, tom])
 	}
 	
 	static var sven: Profile {
-		Profile(id: "312", userName: "sven.stinkt", firstName: "Svehn", lastName: "Sperr", phoneNumber: "+49 987654321", birthday: Date(timeIntervalSince1970: 1090391414), gender: .male, pictureData: nil, friends: [])
+		Profile(id: 312, userName: "sven.stinkt", firstName: "Svehn", lastName: "Sperr", phoneNumber: "+49 987654321", birthday: Date(timeIntervalSince1970: 1090391414), gender: .male, pictureData: nil, friends: [])
 	}
 	
 	static var tyler: Profile {
-		Profile(id: "420420420thc", userName: "tyler.find.ich.geiler", firstName: "Tyler", lastName: "Marvort", phoneNumber: "+50 263847659", birthday: Date(timeIntervalSince1970: 1090680000), gender: .male, pictureData: nil, friends: [])
+		Profile(id: 420420420, userName: "tyler.find.ich.geiler", firstName: "Tyler", lastName: "Marvort", phoneNumber: "+50 263847659", birthday: Date(timeIntervalSince1970: 1090680000), gender: .male, pictureData: nil, friends: [])
 	}
 }
 

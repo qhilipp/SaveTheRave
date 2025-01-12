@@ -29,4 +29,20 @@ extension String {
 		
 		return result
 	}
+	
+	var date: Date {
+		Optional<Self>(self).date!
+	}
+}
+
+extension String? {
+	
+	var date: Date? {
+		guard let formatted = self else { return nil }
+		
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "yyyy-MM-dd"
+		return dateFormatter.date(from: formatted)
+	}
+	
 }

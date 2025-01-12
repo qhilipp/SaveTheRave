@@ -12,6 +12,7 @@ struct WelcomePipelineView: View {
 	@State var path = NavigationPath()
 	@State var profile: Profile = .philipp
 	@State var password: String = ""
+	let action: () -> Void
 	@Environment(\.dismiss) var dismiss
 	
 	var body: some View {
@@ -38,7 +39,12 @@ struct WelcomePipelineView: View {
 				.sendRequest { result in
 				switch result {
 					case .success(let data):
-						print(String(data: data, encoding: .utf8)!)
+						if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+							if let token = jsonObject["token"] as? String {
+								UserDefaults.standard.set("Token \(token)", forKey: "token")
+								action()
+							}
+						}
 					case .failure(let error):
 						print(error)
 				}
@@ -59,5 +65,5 @@ enum WelcomePage {
 }
 
 #Preview {
-	WelcomePipelineView()
+	WelcomePipelineView() {}
 }

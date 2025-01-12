@@ -8,13 +8,16 @@
 import Foundation
 
 struct CreateUserEndpoint: Endpoint {
-	let url = URL(string: "http://169.231.139.207:8000/app/user/create")!
+	let path = "user/create"
 	let method = "POST"
 	let body: Data?
+	var headers: [String: String] = ["Content-Type": "application/json"]
 	
 	init(profile: Profile, password: String) {
 		let parameters: [String: Any] = [
 			"username": profile.userName,
+			"first_name": profile.firstName,
+			"last_name": profile.lastName,
 			"password": password,
 			"birthday": profile.birthday.formatted,
 			"gender": profile.gender.description,

@@ -11,7 +11,7 @@ import SwiftUI
 struct SaveTheRaveApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView(profile: .dummy)
+            ContentView()
         }
     }
 }

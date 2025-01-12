@@ -7,31 +7,73 @@
 
 import SwiftUI
 
+@Observable
+class ViewModel {
+	
+	var profile: Profile?
+	var showProfileEditor = false
+	var showWelcomePipeline = UserDefaults.standard.value(forKey: "token") == nil
+	
+	func fetchProfile() {
+		guard let token = UserDefaults.standard.string(forKey: "token") else {
+			return
+		}
+		
+		GetUserEndpoint(token: token)
+			.sendRequest { result in
+				switch result {
+					case .success(let data):
+						self.profile = Profile.load(from: data)
+					case .failure(let error):
+						print(error)
+				}
+			}
+	}
+	
+}
+
 struct ContentView: View {
 	
-	@State var profile: Profile
-	@State var showProfileEditor = false
-	@State var showWelcomePipeline = true
+	@State var vm = ViewModel()
+	
+	init() {
+		vm.fetchProfile()
+	}
 	
 	var body: some View {
-		TabView {
-			Tab("Explore", systemImage: "party.popper.fill") {
-				PartiesView(profile: profile)
+		if let profile = vm.profile {
+			TabView {
+				Tab("Explore", systemImage: "party.popper.fill") {
+					PartiesView(profile: profile)
+				}
+				Tab("Connections", systemImage: "person.3.fill") {
+					ConnectionsView(profile: profile)
+				}
+				Tab("QR-Code", systemImage: "qrcode.viewfinder") {
+					QRGeneratorView()
+				}
 			}
-			Tab("Connections", systemImage: "person.3.fill") {
-				ConnectionsView(profile: profile)
+			.environment(profile)
+		} else if !vm.showWelcomePipeline {
+			VStack {
+				ProgressView()
+					.progressViewStyle(.circular)
+				Text("Loading...")
 			}
-            Tab("QR-Code", systemImage: "qrcode.viewfinder") {
-                QRGeneratorView()
-            }
-		}
-		.sheet(isPresented: $showWelcomePipeline) {
-			WelcomePipelineView()
+		} else {
+			Button("This should not be shown") {
+				vm.showWelcomePipeline = true
+			}
+			.sheet(isPresented: $vm.showWelcomePipeline) {
+				WelcomePipelineView() {
+					vm.fetchProfile()
+				}
 				.interactiveDismissDisabled(true)
+			}
 		}
 	}
 }
 
 #Preview {
-	ContentView(profile: .dummy)
+	ContentView()
 }

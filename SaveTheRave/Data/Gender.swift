@@ -31,4 +31,19 @@ enum Gender: CustomStringConvertible, Hashable, Codable {
 			case .unknown: .gray
 		}
 	}
+	
+	init(from string: String?) {
+		switch string {
+		case nil:
+			self = .unknown
+		case "male":
+			self = .male
+		case "female":
+			self = .female
+		case "unknown":
+			self = .unknown
+		default:
+			self = .custom(name: string!)
+		}
+	}
 }
