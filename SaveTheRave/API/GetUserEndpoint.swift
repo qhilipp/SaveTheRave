@@ -11,7 +11,7 @@ struct GetUserEndpoint: Endpoint {
 	let path = "app/user"
 	let method = "GET"
 	var headers: [String: String]
-	
+
 	init() {
 		self.headers = [
 			"Authorization": UserDefaults.standard.string(forKey: "token")!,
