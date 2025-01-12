@@ -11,8 +11,10 @@ import SwiftUI
 class ProfileListEntryViewModel {
 	var profile: Profile?
 	var friendStatus = FriendStatus.unknown
+	var actionType: ActionType
 	
-	init(profileId: Int) {
+	init(profileId: Int, actionType: ActionType) {
+		self.actionType = actionType
 		GetUserByIdEndpoint(id: profileId)
 			.sendRequest { result in
 				if case .success(let data) = result {
@@ -28,8 +30,8 @@ struct ProfileListEntryView: View {
 	
 	@State var vm: ProfileListEntryViewModel
 	
-	init(profileId: Int) {
-		vm = ProfileListEntryViewModel(profileId: profileId)
+	init(profileId: Int, with actionType: ActionType = .request) {
+		vm = ProfileListEntryViewModel(profileId: profileId, actionType: actionType)
 	}
 	
 	var body: some View {
@@ -42,12 +44,18 @@ struct ProfileListEntryView: View {
 			VStack(alignment: .leading) {
 				HStack {
 					Text(vm.profile?.fullName ?? "Loading")
-					if [.unknown, .noFriend].contains(vm.friendStatus) {
-						Button {
-							requestFriend()
-						} label: {
-							Image(systemName: "plus")
-								.bold()
+					if [.unknown, .noFriend].contains(vm.friendStatus) && vm.actionType != .none {
+						Button(vm.actionType.rawValue) {
+							switch vm.actionType {
+								case .request:
+									requestFriend()
+									break
+								case .accept:
+									acceptFriend()
+									break
+								case .none:
+									break
+							}
 						}
 						.disabled(vm.friendStatus == .unknown)
 						.buttonStyle(.plain)
@@ -81,6 +89,15 @@ struct ProfileListEntryView: View {
 		}
 	}
 	
+	func acceptFriend() {
+		guard let profile = vm.profile else { return }
+		AcceptFriendEndpoint(id: profile.id)
+			.sendRequest { result in
+				profile.friendRequests.removeAll(where: { $0 == profile.id })
+				profile.friends.append(profile.id)
+			}
+	}
+	
 	func requestFriend() {
 		guard let profileId = vm.profile?.id else { return }
 		
@@ -103,6 +120,12 @@ struct ProfileListEntryView: View {
 			}
 	}
 	
+}
+
+enum ActionType: String {
+	case request = "Request"
+	case accept = "Accept"
+	case none = ""
 }
 
 #Preview {

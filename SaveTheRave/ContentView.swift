@@ -55,6 +55,17 @@ struct ContentView: View {
 				}
 			}
 			.environment(profile)
+			.onAppear {
+				UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+					if let error = error {
+						print("Error requesting notification permission: \(error)")
+					} else if granted {
+						UserDefaults.standard.set(true, forKey: "notificationPermission")
+					} else {
+						print("Notification permission denied.")
+					}
+				}
+			}
 		} else if !vm.showWelcomePipeline {
 			VStack {
 				ProgressView()

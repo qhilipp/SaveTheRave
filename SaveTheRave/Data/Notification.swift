@@ -24,7 +24,7 @@ extension Notification {
 	
 	static func load(from jsonObject: [String: Any]) -> Notification {
 		let profile: Profile?
-		if let profileObject = jsonObject["sender"] {
+		if let profileObject = jsonObject["sender"], profileObject as? NSNull == nil {
 			profile = Profile.load(from: profileObject as! [String: Any])
 		} else {
 			profile = nil

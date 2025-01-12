@@ -27,26 +27,12 @@ struct ProfileEditorIcon: View {
 					Section("Friend requests") {
 						ForEach(profile.friendRequests.sorted(), id: \.self) { profileId in
 							ProfileListEntryView(profileId: profileId)
-							HStack {
-								Text("\(profileId)")
-								Button("Accept") {
-									accept(friend: profileId)
-								}
-							}
 						}
 						.onDelete { indexSet in
 							delete(at: indexSet)
 						}
 					}
 				}
-			}
-	}
-	
-	func accept(friend id: Int) {
-		AcceptFriendEndpoint(id: id)
-			.sendRequest { result in
-				profile.friendRequests.removeAll(where: { $0 == id })
-				profile.friends.append(id)
 			}
 	}
 	
