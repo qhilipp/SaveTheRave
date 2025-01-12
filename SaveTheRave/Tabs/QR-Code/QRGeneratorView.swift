@@ -116,29 +116,27 @@ struct QRGeneratorView: View {
                                     .sendRequest { result in
                                         if case .success(let data) = result {
                                             if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                                                let partyId = jsonObject["id"] as! Int
-                                                CheckInEndpoint(userId: userId, partyId: partyId)
-                                                    .sendRequest { result in
-                                                        if case .success(let data) = result {
-                                                            if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                                                                if let message = jsonObject["message"] as? String {
-                                                                    isSuccess = true
-                                                                    messageText = message
-                                                                    isShowingMessage = true
-                                                                } else if let error = jsonObject["error"] as? String {
-                                                                    isSuccess = false
-                                                                    messageText = error
-                                                                    isShowingMessage = true
-                                                                }
-                                                            }
-                                                        }
-                                                    }
+                                                if let message = jsonObject["message"] as? String {
+                                                    isSuccess = false
+                                                    messageText = message
+                                                    isShowingMessage = true
+                                                } else if let error = jsonObject["error"] as? String {
+                                                    isSuccess = false
+                                                    messageText = error
+                                                    isShowingMessage = true
+                                                } else {
+                                                    isSuccess = true
+                                                    messageText = "Successfully checked in"
+                                                    isShowingMessage = true
+                                                }
                                             }
-                                            
                                         }
+                                        
                                     }
                             }
-                        }}
+                            
+                        }
+                    }
             }
         case .failure(let error):
             print("Scanning failed: \(error.localizedDescription)")
